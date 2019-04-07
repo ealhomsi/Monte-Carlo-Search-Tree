@@ -8,20 +8,23 @@ public class Node {
     List<Node> childArray;
 
     public Node() {
-
+        this.childArray = new ArrayList<>();
     };
 
     public Node(Node n) {
+        this();
         this.state = (State) n.getState().clone();
         this.parent = n.getParent();
         this.childArray = n.getChildArray();
     }
 
     public Node(State state) {
+        this();
         this.state = state;
     }
 
     public Node(State state, Node parent, List<Node> childArray) {
+        this();
         this.state = state;
         this.parent = parent;
         this.childArray = childArray;

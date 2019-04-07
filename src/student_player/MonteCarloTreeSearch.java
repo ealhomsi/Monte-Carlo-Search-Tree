@@ -5,14 +5,14 @@ import pentago_swap.PentagoBoardState;
 import pentago_swap.PentagoMove;
 
 public class MonteCarloTreeSearch {
-    static final int WIN_SCORE = 10;
-    int level;
+    static final int WIN_SCORE = 100;
     int opponent;
 
     public PentagoMove findNextMove(PentagoBoardState pbs) {
         opponent = pbs.getOpponent();
         Tree tree = new Tree(new Node(new State(pbs, 0, 0.0d, null)));
 
+        // Need to do a bit of alpha beta expansion here before selecting promising
         Node promisingNode = selectPromisingNode(tree.getRoot());
         if (!promisingNode.getState().getPbs().gameOver())
             expandNode(promisingNode);

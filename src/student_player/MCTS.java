@@ -1,5 +1,8 @@
 package student_player;
 
+/**
+ * This class is just a singelton wrapper for MonteCarloTreeSearch
+ */
 class MCTS {
     // static variable single_instance of type Singleton
     private static MonteCarloTreeSearch single_instance = null;

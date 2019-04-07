@@ -2,6 +2,9 @@ package student_player;
 
 import java.util.*;
 
+/**
+ * Upper Confidence Bounds for Trees
+ */
 public class UCT {
     public static double uctValue(int totalVisit, double nodeWinScore, int nodeVisit) {
         if (nodeVisit == 0) {
