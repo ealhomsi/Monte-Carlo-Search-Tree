@@ -11,7 +11,7 @@ public class MonteCarloTreeSearch {
 
     public PentagoMove findNextMove(PentagoBoardState pbs) {
         opponent = pbs.getOpponent();
-        Tree tree = new Tree(new Node(new State(pbs, 0, 0.0d)));
+        Tree tree = new Tree(new Node(new State(pbs, 0, 0.0d, null)));
 
         Node promisingNode = selectPromisingNode(tree.getRoot());
         if (!promisingNode.getState().getPbs().gameOver())
