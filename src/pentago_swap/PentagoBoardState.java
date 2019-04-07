@@ -14,6 +14,7 @@ import java.util.Scanner;
 /**
  *
  * Note: First player white, second player black!!
+ * 
  * @author mgrenander
  */
 public class PentagoBoardState extends BoardState {
@@ -24,6 +25,7 @@ public class PentagoBoardState extends BoardState {
     public static final int BLACK = 1;
     public static final int MAX_TURNS = 18;
     private static final int ILLEGAL = -1;
+
     public enum Piece {
         BLACK, WHITE, EMPTY;
 
@@ -33,15 +35,19 @@ public class PentagoBoardState extends BoardState {
     }
 
     public enum Quadrant {
-        TL, TR, BL, BR;  // Top-left, Top-right, Bottom-left, Bottom-right
+        TL, TR, BL, BR; // Top-left, Top-right, Bottom-left, Bottom-right
 
-        public String toString() { return name(); }
+        public String toString() {
+            return name();
+        }
     }
 
-    private static final UnaryOperator<PentagoCoord> getNextHorizontal = c -> new PentagoCoord(c.getX(), c.getY()+1);
-    private static final UnaryOperator<PentagoCoord> getNextVertical = c -> new PentagoCoord(c.getX()+1, c.getY());
-    private static final UnaryOperator<PentagoCoord> getNextDiagRight = c -> new PentagoCoord(c.getX()+1, c.getY()+1);
-    private static final UnaryOperator<PentagoCoord> getNextDiagLeft = c -> new PentagoCoord(c.getX()+1, c.getY()-1);
+    private static final UnaryOperator<PentagoCoord> getNextHorizontal = c -> new PentagoCoord(c.getX(), c.getY() + 1);
+    private static final UnaryOperator<PentagoCoord> getNextVertical = c -> new PentagoCoord(c.getX() + 1, c.getY());
+    private static final UnaryOperator<PentagoCoord> getNextDiagRight = c -> new PentagoCoord(c.getX() + 1,
+            c.getY() + 1);
+    private static final UnaryOperator<PentagoCoord> getNextDiagLeft = c -> new PentagoCoord(c.getX() + 1,
+            c.getY() - 1);
     private static int FIRST_PLAYER = WHITE;
     private static HashMap<Quadrant, Integer> quadToInt;
     private static HashMap<Integer, Quadrant> intToQuad;
@@ -108,7 +114,9 @@ public class PentagoBoardState extends BoardState {
         this.turnNumber = pbs.turnNumber;
     }
 
-    Piece[][] getBoard() { return this.board; }
+    Piece[][] getBoard() {
+        return this.board;
+    }
 
     @Override
     public Object clone() {
@@ -116,24 +124,38 @@ public class PentagoBoardState extends BoardState {
     }
 
     @Override
-    public int getWinner() { return winner; }
+    public int getWinner() {
+        return winner;
+    }
 
     @Override
-    public void setWinner(int win) { winner = win; }
+    public void setWinner(int win) {
+        winner = win;
+    }
 
     @Override
-    public int getTurnPlayer() { return turnPlayer; }
+    public int getTurnPlayer() {
+        return turnPlayer;
+    }
 
     @Override
-    public int getTurnNumber() { return turnNumber; }
+    public int getTurnNumber() {
+        return turnNumber;
+    }
 
     @Override
-    public boolean isInitialized() { return board != null; }
+    public boolean isInitialized() {
+        return board != null;
+    }
 
     @Override
-    public int firstPlayer() { return FIRST_PLAYER; }
+    public int firstPlayer() {
+        return FIRST_PLAYER;
+    }
 
-    public int getOpponent() { return (turnPlayer == WHITE) ? BLACK : WHITE; }
+    public int getOpponent() {
+        return (turnPlayer == WHITE) ? BLACK : WHITE;
+    }
 
     @Override
     public Move getRandomMove() {
@@ -154,11 +176,11 @@ public class PentagoBoardState extends BoardState {
 
     public ArrayList<PentagoMove> getAllLegalMoves() {
         ArrayList<PentagoMove> legalMoves = new ArrayList<>();
-        for (int i = 0; i < BOARD_SIZE; i++) { //Iterate through positions on board
+        for (int i = 0; i < BOARD_SIZE; i++) { // Iterate through positions on board
             for (int j = 0; j < BOARD_SIZE; j++) {
                 if (board[i][j] == Piece.EMPTY) {
                     for (int k = 0; k < NUM_QUADS - 1; k++) { // Iterate through valid swaps
-                        for (int l = k+1; l < NUM_QUADS; l++) {
+                        for (int l = k + 1; l < NUM_QUADS; l++) {
                             legalMoves.add(new PentagoMove(i, j, intToQuad.get(k), intToQuad.get(l), turnPlayer));
                         }
                     }
@@ -170,37 +192,53 @@ public class PentagoBoardState extends BoardState {
 
     /**
      * Check if the given move is legal
+     * 
      * @param m the move
      * @return true if the move is legal, false otherwise
      */
     public boolean isLegal(PentagoMove m) {
-        if (m.getASwap() == m.getBSwap()) { return false; } // Cannot swap same tile
+        if (m.getASwap() == m.getBSwap()) {
+            return false;
+        } // Cannot swap same tile
         PentagoCoord c = m.getMoveCoord();
-        if (c.getX() >= BOARD_SIZE || c.getX() < 0 || c.getY() < 0 || c.getY() >= BOARD_SIZE) { return false; }
-        if (turnPlayer != m.getPlayerID() || m.getPlayerID() == ILLEGAL) { return false; } //Check right player
+        if (c.getX() >= BOARD_SIZE || c.getX() < 0 || c.getY() < 0 || c.getY() >= BOARD_SIZE) {
+            return false;
+        }
+        if (turnPlayer != m.getPlayerID() || m.getPlayerID() == ILLEGAL) {
+            return false;
+        } // Check right player
         return board[c.getX()][c.getY()] == Piece.EMPTY;
     }
 
     /**
-     * Check if placing a piece here is legal, without regards to the swap or player ID
+     * Check if placing a piece here is legal, without regards to the swap or player
+     * ID
+     * 
      * @param c coordinate for the piece
      * @return true if piece can be played here, false otherwise
      */
     public boolean isPlaceLegal(PentagoCoord c) {
-        if (c.getX() >= BOARD_SIZE || c.getX() < 0 || c.getY() < 0 || c.getY() >= BOARD_SIZE) { return false; }
+        if (c.getX() >= BOARD_SIZE || c.getX() < 0 || c.getY() < 0 || c.getY() >= BOARD_SIZE) {
+            return false;
+        }
         return board[c.getX()][c.getY()] == Piece.EMPTY;
     }
 
     public void processMove(PentagoMove m) throws IllegalArgumentException {
-        if (!isLegal(m)) { throw new IllegalArgumentException("Invalid move. Move: " + m.toPrettyString()); }
+        if (!isLegal(m)) {
+            throw new IllegalArgumentException("Invalid move. Move: " + m.toPrettyString());
+        }
         updateQuadrants(m);
         updateWinner();
-        if (turnPlayer != FIRST_PLAYER) { turnNumber += 1; } // Update the turn number if needed
+        if (turnPlayer != FIRST_PLAYER) {
+            turnNumber += 1;
+        } // Update the turn number if needed
         turnPlayer = 1 - turnPlayer; // Swap player
     }
 
     /**
      * Updates the appropriate quandrant based on the location of the move m
+     * 
      * @param m: Pentago move
      */
     private void updateQuadrants(PentagoMove m) {
@@ -209,17 +247,17 @@ public class PentagoBoardState extends BoardState {
         int y = m.getMoveCoord().getY();
         boolean isLeftQuadMove = y / 3 == 0;
         boolean isTopQuadMove = x / 3 == 0;
-        if (isLeftQuadMove && isTopQuadMove) { //Top left quadrant
+        if (isLeftQuadMove && isTopQuadMove) { // Top left quadrant
             quadrants[0][x][y] = turnPiece;
-        } else if (!isLeftQuadMove && isTopQuadMove) { //Top right quadrant
+        } else if (!isLeftQuadMove && isTopQuadMove) { // Top right quadrant
             quadrants[1][x][y % QUAD_SIZE] = turnPiece;
-        } else if (isLeftQuadMove) { //Bottom left quadrant
+        } else if (isLeftQuadMove) { // Bottom left quadrant
             quadrants[2][x % QUAD_SIZE][y] = turnPiece;
-        } else { //Bottom right quadrant
+        } else { // Bottom right quadrant
             quadrants[3][x % QUAD_SIZE][y % QUAD_SIZE] = turnPiece;
         }
 
-        //Swapping mechanism
+        // Swapping mechanism
         int a = quadToInt.get(m.getASwap());
         int b = quadToInt.get(m.getBSwap());
         Piece[][] tmp = quadrants[a];
@@ -246,9 +284,11 @@ public class PentagoBoardState extends BoardState {
      * Checks if the game has ended, and changes the winner attribute if so.
      */
     private void updateWinner() {
-        boolean playerWin = checkVerticalWin(turnPlayer) || checkHorizontalWin(turnPlayer) || checkDiagRightWin(turnPlayer) || checkDiagLeftWin(turnPlayer);
+        boolean playerWin = checkVerticalWin(turnPlayer) || checkHorizontalWin(turnPlayer)
+                || checkDiagRightWin(turnPlayer) || checkDiagLeftWin(turnPlayer);
         int otherPlayer = 1 - turnPlayer;
-        boolean otherWin = checkVerticalWin(otherPlayer) || checkHorizontalWin(otherPlayer) || checkDiagRightWin(otherPlayer) || checkDiagLeftWin(otherPlayer);
+        boolean otherWin = checkVerticalWin(otherPlayer) || checkHorizontalWin(otherPlayer)
+                || checkDiagRightWin(otherPlayer) || checkDiagLeftWin(otherPlayer);
         if (playerWin) { // Current player has won
             winner = otherWin ? Board.DRAW : turnPlayer;
         } else if (otherWin) { // Player's move caused the opponent to win
@@ -276,15 +316,18 @@ public class PentagoBoardState extends BoardState {
     }
 
     private boolean checkDiagLeftWin(int player) {
-        return checkWinRange(player, 0 ,2, BOARD_SIZE - 2, BOARD_SIZE, getNextDiagLeft);
+        return checkWinRange(player, 0, 2, BOARD_SIZE - 2, BOARD_SIZE, getNextDiagLeft);
     }
 
-    private boolean checkWinRange(int player, int xStart, int xEnd, int yStart, int yEnd, UnaryOperator<PentagoCoord> direction) {
+    private boolean checkWinRange(int player, int xStart, int xEnd, int yStart, int yEnd,
+            UnaryOperator<PentagoCoord> direction) {
         boolean win = false;
         for (int i = xStart; i < xEnd; i++) {
             for (int j = yStart; j < yEnd; j++) {
                 win |= checkWin(player, new PentagoCoord(i, j), direction);
-                if (win) { return true; }
+                if (win) {
+                    return true;
+                }
             }
         }
         return false;
@@ -294,7 +337,7 @@ public class PentagoBoardState extends BoardState {
         int winCounter = 0;
         Piece currColour = player == 0 ? Piece.WHITE : Piece.BLACK;
         PentagoCoord current = start;
-        while(true) {
+        while (true) {
             try {
                 if (currColour == this.board[current.getX()][current.getY()]) {
                     winCounter++;
@@ -302,7 +345,7 @@ public class PentagoBoardState extends BoardState {
                 } else {
                     break;
                 }
-            } catch (IllegalArgumentException e) { //We have run off the board
+            } catch (IllegalArgumentException e) { // We have run off the board
                 break;
             }
         }
@@ -342,7 +385,7 @@ public class PentagoBoardState extends BoardState {
 
         Scanner scanner = new Scanner(System.in);
         int id = FIRST_PLAYER;
-        while(pbs.winner == Board.NOBODY) {
+        while (pbs.winner == Board.NOBODY) {
             System.out.print("Enter move (x y a b): ");
             String moveStr = scanner.nextLine();
             PentagoMove m = new PentagoMove(moveStr + " " + id);
@@ -355,21 +398,21 @@ public class PentagoBoardState extends BoardState {
             id = 1 - id;
         }
 
-        switch(pbs.winner) {
-            case WHITE:
-                System.out.println("White wins.");
-                break;
-            case BLACK:
-                System.out.println("Black wins.");
-                break;
-            case Board.DRAW:
-                System.out.println("Draw.");
-                break;
-            case Board.NOBODY:
-                System.out.println("Nobody has won.");
-                break;
-            default:
-                System.out.println("Unknown error.");
+        switch (pbs.winner) {
+        case WHITE:
+            System.out.println("White wins.");
+            break;
+        case BLACK:
+            System.out.println("Black wins.");
+            break;
+        case Board.DRAW:
+            System.out.println("Draw.");
+            break;
+        case Board.NOBODY:
+            System.out.println("Nobody has won.");
+            break;
+        default:
+            System.out.println("Unknown error.");
         }
     }
 }

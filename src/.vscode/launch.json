@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - ServerGUI",
+            "request": "launch",
+            "mainClass": "boardgame.ServerGUI",
+            "projectName": "src_615deaf5"
+        }
+    ]
+}
