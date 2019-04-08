@@ -13,18 +13,16 @@ public class MonteCarloTreeSearch {
     static Random rand;
     int opponent;
     int me;
-    Tree tree;
 
     public PentagoMove findNextMove(PentagoBoardState pbs) {
-        rand = new Random();
+        rand = new Random(System.currentTimeMillis());
         opponent = pbs.getOpponent();
         me = pbs.getTurnPlayer();
         if (opponent == me) {
             throw new RuntimeException("DAFAQ?");
         }
 
-        tree = new Tree(new Node(new State(pbs, 0, 0.0d, null), null));
-        // figure out where are we
+        Tree tree = new Tree(new Node(new State(pbs, 0, 0.0d, null), null));
 
         Node promisingNode = selectPromisingNode(tree.getRoot());
         if (!promisingNode.getState().getPbs().gameOver())
