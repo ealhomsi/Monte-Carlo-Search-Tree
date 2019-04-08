@@ -9,7 +9,8 @@ import pentago_swap.PentagoMove;
 public class MonteCarloTreeSearch {
     static final int WIN_SCORE = 70;
     static final int DRAW_SCORE = 20;
-    static final int SIMULATION_FACTOR = 10;
+    static final int SIMULATION_FACTOR = 100;
+    static final int SPWAN_CHANCE = 1;
     static Random rand;
     int opponent;
     int me;
@@ -72,7 +73,7 @@ public class MonteCarloTreeSearch {
                 int playoutResult = simulateRandomPlayout(newNode);
                 backPropogation(newNode, playoutResult);
             }
-            boolean expandMore = rand.nextInt(1000) < SIMULATION_FACTOR; // set this to very low probability
+            boolean expandMore = rand.nextInt(SIMULATION_FACTOR) <= SPWAN_CHANCE; // set this to very low probability
             if (expandMore) {
                 expandAndSimulate(newNode);
             }
