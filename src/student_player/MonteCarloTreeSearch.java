@@ -71,10 +71,10 @@ public class MonteCarloTreeSearch {
             for (int index = 0; index < limit; index++) {
                 int playoutResult = simulateRandomPlayout(newNode);
                 backPropogation(newNode, playoutResult);
-                boolean expandMore = rand.nextBoolean();
-                if (expandMore) {
-                    expandAndSimulate(newNode);
-                }
+            }
+            boolean expandMore = rand.nextBoolean();
+            if (expandMore) {
+                expandAndSimulate(newNode);
             }
         });
     }
