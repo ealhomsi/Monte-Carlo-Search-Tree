@@ -10,11 +10,13 @@ public class MonteCarloTreeSearch {
     static final int WIN_SCORE = 70;
     static final int DRAW_SCORE = 20;
     static final int SIMULATION_FACTOR = 100;
+    static Random rand;
     int opponent;
     int me;
     Tree tree;
 
     public PentagoMove findNextMove(PentagoBoardState pbs) {
+        rand = new Random();
         opponent = pbs.getOpponent();
         me = pbs.getTurnPlayer();
         if (opponent == me) {
@@ -67,10 +69,12 @@ public class MonteCarloTreeSearch {
             node.getChildArray().add(newNode);
 
             // simulate for each one a random number of times
-            for (int index = 0; index < new Random().nextInt(SIMULATION_FACTOR); index++) {
+            int limit = rand.nextInt(SIMULATION_FACTOR);
+            for (int index = 0; index < limit; index++) {
                 int playoutResult = simulateRandomPlayout(newNode);
                 backPropogation(newNode, playoutResult);
-                if (new Random().nextBoolean()) {
+                boolean expandMore = rand.nextBoolean();
+                if (expandMore) {
                     expandAndSimulate(newNode);
                 }
             }
