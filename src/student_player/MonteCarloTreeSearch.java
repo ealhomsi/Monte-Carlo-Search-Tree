@@ -7,8 +7,8 @@ import pentago_swap.PentagoBoardState;
 import pentago_swap.PentagoMove;
 
 public class MonteCarloTreeSearch {
-    static final int WIN_SCORE = 70;
-    static final int DRAW_SCORE = 20;
+    static final int WIN_SCORE = 30;
+    static final int DRAW_SCORE = 10;
     static final int SIMULATION_FACTOR = 30;
     static final double SPWAN_CHANCE = 0.001;
     static Random rand;
@@ -68,8 +68,8 @@ public class MonteCarloTreeSearch {
             node.getChildArray().add(newNode);
 
             // simulate for each one a random number of times
-            int limit = rand.nextInt(SIMULATION_FACTOR);
-            for (int index = 0; index < limit; index++) {
+            int limit = SIMULATION_FACTOR + rand.nextInt(SIMULATION_FACTOR);
+            for (int index = 0; index <= limit; index++) {
                 int playoutResult = simulateRandomPlayout(newNode);
                 backPropogation(newNode, playoutResult);
             }
