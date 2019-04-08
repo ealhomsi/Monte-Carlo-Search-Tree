@@ -18,9 +18,10 @@ public class Node {
         this.childArray = n.getChildArray();
     }
 
-    public Node(State state) {
+    public Node(State state, Node parent) {
         this();
         this.state = state;
+        this.parent = parent;
     }
 
     public Node(State state, Node parent, List<Node> childArray) {

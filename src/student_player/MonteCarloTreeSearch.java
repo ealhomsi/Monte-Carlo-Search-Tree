@@ -1,18 +1,29 @@
 package student_player;
 
 import java.util.*;
+
+import boardgame.Board;
 import pentago_swap.PentagoBoardState;
 import pentago_swap.PentagoMove;
 
 public class MonteCarloTreeSearch {
-    static final int WIN_SCORE = 100;
+    static final int WIN_SCORE = 70;
+    static final int DRAW_SCORE = 20;
+    static final int SIMULATION_FACTOR = 100;
     int opponent;
+    int me;
+    Tree tree;
 
     public PentagoMove findNextMove(PentagoBoardState pbs) {
         opponent = pbs.getOpponent();
-        Tree tree = new Tree(new Node(new State(pbs, 0, 0.0d, null)));
+        me = pbs.getTurnPlayer();
+        if (opponent == me) {
+            throw new RuntimeException("DAFAQ?");
+        }
 
-        // Need to do a bit of alpha beta expansion here before selecting promising
+        tree = new Tree(new Node(new State(pbs, 0, 0.0d, null), null));
+        // figure out where are we
+
         Node promisingNode = selectPromisingNode(tree.getRoot());
         if (!promisingNode.getState().getPbs().gameOver())
             expandNode(promisingNode);
@@ -25,11 +36,14 @@ public class MonteCarloTreeSearch {
         backPropogation(nodeToExplore, playoutResult);
 
         Node winnerNode = tree.getRoot().getChildWithMaxScore();
-        tree.setRoot(winnerNode);
         return winnerNode.getState().getMove();
     }
 
     private Node selectPromisingNode(Node rootNode) {
+        // expand and simulate first level (explore)
+        expandAndSimulate(rootNode);
+
+        // now go greedy
         Node node = rootNode;
         while (node.getChildArray().size() != 0)
             node = UCT.findBestNodeWithUCT(node);
@@ -39,9 +53,27 @@ public class MonteCarloTreeSearch {
     private void expandNode(Node node) {
         List<State> possibleStates = node.getState().getAllPossibleStates();
         possibleStates.forEach(state -> {
-            Node newNode = new Node(state);
+            Node newNode = new Node(state, node);
             newNode.setParent(node);
             node.getChildArray().add(newNode);
+        });
+    }
+
+    private void expandAndSimulate(Node node) {
+        List<State> possibleStates = node.getState().getAllPossibleStates();
+        possibleStates.forEach(state -> {
+            Node newNode = new Node(state, node);
+            newNode.setParent(node);
+            node.getChildArray().add(newNode);
+
+            // simulate for each one a random number of times
+            for (int index = 0; index < new Random().nextInt(SIMULATION_FACTOR); index++) {
+                int playoutResult = simulateRandomPlayout(newNode);
+                backPropogation(newNode, playoutResult);
+                if (new Random().nextBoolean()) {
+                    expandAndSimulate(newNode);
+                }
+            }
         });
     }
 
@@ -49,8 +81,10 @@ public class MonteCarloTreeSearch {
         Node tempNode = nodeToExplore;
         while (tempNode != null) {
             tempNode.getState().incrementVisit();
-            if (tempNode.getState().getPbs().getTurnPlayer() == playerNo) {
+            if (playerNo == me) {
                 tempNode.getState().addScore(WIN_SCORE);
+            } else if (playerNo == Board.DRAW) {
+                tempNode.getState().addScore(DRAW_SCORE);
             }
             tempNode = tempNode.getParent();
         }
@@ -65,7 +99,7 @@ public class MonteCarloTreeSearch {
             tempState.randomPlay();
         }
 
-        if (pbs.getWinner() == opponent) {
+        if (pbs.gameOver() && pbs.getWinner() == opponent) {
             tempNode.getParent().getState().setWinScore(Integer.MIN_VALUE);
         }
 

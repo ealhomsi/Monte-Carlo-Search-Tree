@@ -11,7 +11,7 @@ public class UCT {
             return Integer.MAX_VALUE;
         }
         return ((double) nodeWinScore / (double) nodeVisit)
-                + 1.41 * Math.sqrt(Math.log(totalVisit) / (double) nodeVisit);
+                + 1.4 * Math.sqrt(Math.log(totalVisit) / (double) nodeVisit);
     }
 
     public static Node findBestNodeWithUCT(Node node) {
